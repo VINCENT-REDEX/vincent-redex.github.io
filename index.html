@@ -3,626 +3,675 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VINCENT-REDEX | Cyberpunk Developer</title>
+    <title>VINCENT-REDEX | Not Another Template</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-red: #FF0055;
-            --neon-cyan: #00F0FF;
-            --neon-yellow: #FFEE00;
-            --neon-green: #00FF66;
-            --dark-bg: #0A0A0A;
-            --darker-bg: #050505;
-            --panel-bg: rgba(10, 10, 10, 0.95);
-            --grid-color: rgba(0, 240, 255, 0.1);
+            --red: #ff003c;
+            --cyan: #00f0ff;
+            --yellow: #fcee0a;
+            --bg: #0d0d0d;
+            --panel: #141414;
+            --text: #e0e0e0;
+            --muted: #666;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Rajdhani', sans-serif;
-            background: var(--darker-bg);
-            color: #E0E0E0;
-            overflow-x: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'IBM Plex Mono', monospace;
             min-height: 100vh;
+            position: relative;
         }
 
-        /* Scanline effect */
+        /* Noise texture */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1000;
+            mix-blend-mode: overlay;
+        }
+
+        /* CRT scanline */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: repeating-linear-gradient(
                 0deg,
                 transparent,
                 transparent 2px,
-                rgba(0, 0, 0, 0.3) 2px,
-                rgba(0, 0, 0, 0.3) 4px
+                rgba(0, 0, 0, 0.15) 2px,
+                rgba(0, 0, 0, 0.15) 4px
             );
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        /* Grid background */
-        .grid-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* Glitch animation */
-        @keyframes glitch {
-            0% { transform: translate(0) }
-            20% { transform: translate(-2px, 2px) }
-            40% { transform: translate(-2px, -2px) }
-            60% { transform: translate(2px, 2px) }
-            80% { transform: translate(2px, -2px) }
-            100% { transform: translate(0) }
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-            52% { opacity: 0.2; }
-            54% { opacity: 0.8; }
-        }
-
-        @keyframes neonPulse {
-            0%, 100% { box-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan); }
-            50% { box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan); }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(-100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Header */
-        header {
-            padding: 2rem;
-            border-bottom: 2px solid var(--neon-red);
-            background: linear-gradient(180deg, rgba(255, 0, 85, 0.1) 0%, transparent 100%);
-            position: relative;
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--neon-red), var(--neon-cyan), var(--neon-yellow));
-            animation: flicker 3s infinite;
-        }
-
-        .logo {
-            font-family: 'Orbitron', monospace;
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--neon-red);
-            text-shadow: 0 0 10px var(--neon-red), 0 0 20px var(--neon-red);
-            letter-spacing: 4px;
-        }
-
-        .logo span {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
-        }
-
-        .tagline {
-            font-size: 1.2rem;
-            color: var(--neon-yellow);
-            margin-top: 0.5rem;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-        }
-
-        /* Main content */
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-        }
-
-        /* Profile section */
-        .profile-section {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 3rem;
-            margin-bottom: 4rem;
-            padding: 2rem;
-            background: var(--panel-bg);
-            border: 1px solid var(--neon-cyan);
-            position: relative;
-        }
-
-        .profile-section::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--neon-red), var(--neon-cyan));
-        }
-
-        .avatar-container {
-            position: relative;
-        }
-
-        .avatar {
-            width: 250px;
-            height: 250px;
-            border: 3px solid var(--neon-red);
-            border-radius: 0;
-            background: linear-gradient(135deg, var(--dark-bg), #1a1a1a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Orbitron', monospace;
-            font-size: 4rem;
-            color: var(--neon-red);
-            text-shadow: 0 0 20px var(--neon-red);
-            animation: neonPulse 2s infinite;
-        }
-
-        .avatar-container::after {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 250px;
-            height: 250px;
-            border: 1px solid var(--neon-cyan);
-            z-index: -1;
-        }
-
-        .profile-info h2 {
-            font-family: 'Orbitron', monospace;
-            font-size: 2.5rem;
-            color: var(--neon-cyan);
-            margin-bottom: 1rem;
-            text-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        .profile-info .handle {
-            font-size: 1.3rem;
-            color: var(--neon-yellow);
-            margin-bottom: 1.5rem;
-            font-family: 'Rajdhani', monospace;
-        }
-
-        .profile-info p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #B0B0B0;
-            margin-bottom: 1rem;
-        }
-
-        .stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(0, 240, 255, 0.3);
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-family: 'Orbitron', monospace;
-            font-size: 2rem;
-            color: var(--neon-green);
-            text-shadow: 0 0 10px var(--neon-green);
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #808080;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Projects section */
-        .section-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 2rem;
-            color: var(--neon-red);
-            margin-bottom: 2rem;
-            text-shadow: 0 0 10px var(--neon-red);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .section-title::before {
-            content: '>';
-            color: var(--neon-cyan);
-        }
-
-        .section-title::after {
-            content: '';
-            flex: 1;
-            height: 2px;
-            background: linear-gradient(90deg, var(--neon-red), transparent);
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .project-card {
-            background: var(--panel-bg);
-            border: 1px solid var(--neon-cyan);
-            padding: 1.5rem;
-            position: relative;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .project-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.2);
-        }
-
-        .project-card h3 {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.3rem;
-            color: var(--neon-cyan);
-            margin-bottom: 0.5rem;
-        }
-
-        .project-card .repo-name {
-            font-size: 0.9rem;
-            color: var(--neon-yellow);
-            margin-bottom: 1rem;
-        }
-
-        .project-card p {
-            color: #909090;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-
-        .project-meta {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.85rem;
-            color: #606060;
-        }
-
-        .project-meta span {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        /* Skills section */
-        .skills-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 4rem;
-        }
-
-        .skill-tag {
-            padding: 0.5rem 1.5rem;
-            border: 1px solid var(--neon-green);
-            color: var(--neon-green);
-            font-family: 'Rajdhani', monospace;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .skill-tag:hover {
-            background: var(--neon-green);
-            color: var(--dark-bg);
-            box-shadow: 0 0 20px var(--neon-green);
-        }
-
-        /* Links section */
-        .links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 4rem;
-        }
-
-        .cyber-link {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.5rem;
-            background: var(--panel-bg);
-            border: 1px solid var(--neon-red);
-            color: #E0E0E0;
-            text-decoration: none;
-            font-family: 'Orbitron', monospace;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cyber-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 0, 85, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .cyber-link:hover::before {
-            left: 100%;
-        }
-
-        .cyber-link:hover {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-            transform: translateX(10px);
-        }
-
-        .cyber-link .icon {
-            font-size: 1.5rem;
-            width: 40px;
-            text-align: center;
-        }
-
-        .cyber-link .link-text {
-            flex: 1;
-        }
-
-        .cyber-link .arrow {
-            color: var(--neon-red);
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .cyber-link:hover .arrow {
-            transform: translateX(10px);
-            color: var(--neon-cyan);
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 3rem 2rem;
-            border-top: 1px solid var(--neon-red);
-            background: linear-gradient(0deg, rgba(255, 0, 85, 0.1) 0%, transparent 100%);
-        }
-
-        footer p {
-            color: #606060;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-        }
-
-        footer .neon-text {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .profile-section {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .avatar-container {
-                justify-self: center;
-            }
-
-            .logo {
-                font-size: 2rem;
-            }
-
-            .tagline {
-                font-size: 0.9rem;
-                letter-spacing: 4px;
-            }
-
-            .stats {
-                justify-content: center;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Decorative elements */
-        .corner-decoration {
-            position: fixed;
-            width: 100px;
-            height: 100px;
             pointer-events: none;
             z-index: 999;
         }
 
-        .corner-decoration.top-left {
+        /* Glitch text effect */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
             top: 0;
             left: 0;
-            border-top: 3px solid var(--neon-red);
-            border-left: 3px solid var(--neon-red);
+            width: 100%;
+            height: 100%;
         }
 
-        .corner-decoration.top-right {
-            top: 0;
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--red);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-1 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--cyan);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(20px, 9999px, 30px, 0); }
+            20% { clip: rect(80px, 9999px, 90px, 0); }
+            40% { clip: rect(10px, 9999px, 50px, 0); }
+            60% { clip: rect(60px, 9999px, 70px, 0); }
+            80% { clip: rect(30px, 9999px, 40px, 0); }
+            100% { clip: rect(90px, 9999px, 100px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(60px, 9999px, 70px, 0); }
+            20% { clip: rect(10px, 9999px, 20px, 0); }
+            40% { clip: rect(90px, 9999px, 100px, 0); }
+            60% { clip: rect(30px, 9999px, 40px, 0); }
+            80% { clip: rect(70px, 9999px, 80px, 0); }
+            100% { clip: rect(20px, 9999px, 30px, 0); }
+        }
+
+        /* Flicker */
+        @keyframes flicker {
+            0%, 95%, 100% { opacity: 1; }
+            96% { opacity: 0.8; }
+            97% { opacity: 1; }
+            98% { opacity: 0.7; }
+        }
+
+        /* Marquee for that old web feel */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .marquee {
+            overflow: hidden;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--muted);
+            padding: 0.5rem 0;
+            font-size: 0.75rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .marquee span {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* Header */
+        header {
+            padding: 3rem 0;
+            border-bottom: 2px solid var(--red);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        header::after {
+            content: '█ ONLINE';
+            position: absolute;
             right: 0;
-            border-top: 3px solid var(--neon-cyan);
-            border-right: 3px solid var(--neon-cyan);
+            top: 0;
+            color: var(--cyan);
+            font-size: 0.8rem;
+            animation: flicker 2s infinite;
         }
 
-        .corner-decoration.bottom-left {
+        h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--red);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            letter-spacing: 3px;
+        }
+
+        .tagline {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--panel);
+            border-left: 3px solid var(--yellow);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Status bar */
+        .status-bar {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: var(--panel);
+            border: 1px solid #222;
+            font-size: 0.8rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        .status-dot.busy { background: var(--yellow); box-shadow: 0 0 10px var(--yellow); }
+        .status-dot.offline { background: var(--red); box-shadow: 0 0 10px var(--red); }
+
+        /* Sections */
+        section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h2::before {
+            content: '//';
+            color: var(--muted);
+        }
+
+        h2::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--cyan), transparent);
+        }
+
+        /* Projects */
+        .projects {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .project {
+            padding: 1.5rem;
+            background: var(--panel);
+            border: 1px solid #222;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .project:hover {
+            border-color: var(--cyan);
+            transform: translateX(5px);
+            box-shadow: -5px 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-name {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--yellow);
+        }
+
+        .project-lang {
+            font-size: 0.75rem;
+            color: var(--muted);
+            padding: 0.25rem 0.5rem;
+            border: 1px solid #333;
+        }
+
+        .project-desc {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .project-meta {
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            color: #444;
+        }
+
+        /* Rant section */
+        .rant {
+            background: var(--panel);
+            border: 1px solid var(--red);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .rant::before {
+            content: 'RANT_MODE_ENABLED';
+            position: absolute;
+            top: -10px;
+            left: 1rem;
+            background: var(--red);
+            color: var(--bg);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .rant p {
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .rant p:last-child {
+            margin-bottom: 0;
+        }
+
+        .rant::after {
+            content: '';
+            position: absolute;
             bottom: 0;
             left: 0;
-            border-bottom: 3px solid var(--neon-cyan);
-            border-left: 3px solid var(--neon-cyan);
+            width: 100%;
+            height: 3px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--red) 0px,
+                var(--red) 10px,
+                transparent 10px,
+                transparent 20px
+            );
         }
 
-        .corner-decoration.bottom-right {
-            bottom: 0;
-            right: 0;
-            border-bottom: 3px solid var(--neon-red);
-            border-right: 3px solid var(--neon-red);
+        /* Terminal style about */
+        .terminal {
+            background: #000;
+            border: 1px solid #333;
+            padding: 1rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+        }
+
+        .terminal-prompt {
+            color: var(--cyan);
+        }
+
+        .terminal-command {
+            color: var(--yellow);
+        }
+
+        .terminal-output {
+            color: var(--muted);
+            padding-left: 1rem;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background: var(--cyan);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Links */
+        .links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .link {
+            padding: 1rem;
+            background: var(--panel);
+            border: 1px solid #333;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .link:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .link-label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.25rem;
+        }
+
+        .link-url {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid #222;
+            padding-top: 2rem;
+            margin-top: 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        /* Easter egg */
+        .easter-egg {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .easter-egg:hover {
+            background: var(--red);
+        }
+
+        /* Hidden message */
+        .hidden-msg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--panel);
+            border: 2px solid var(--red);
+            padding: 2rem;
+            z-index: 1001;
+            display: none;
+            text-align: center;
+        }
+
+        .hidden-msg.show {
+            display: block;
+            animation: flicker 0.1s;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .status-bar { flex-direction: column; gap: 1rem; }
+            footer { flex-direction: column; gap: 1rem; text-align: center; }
+            .footer-right { text-align: center; }
         }
     </style>
 </head>
 <body>
-    <div class="grid-bg"></div>
-    
-    <div class="corner-decoration top-left"></div>
-    <div class="corner-decoration top-right"></div>
-    <div class="corner-decoration bottom-left"></div>
-    <div class="corner-decoration bottom-right"></div>
+    <div class="marquee">
+        <span>SYSTEM ONLINE // NO BUGS INTRODUCED TODAY // LAST DEPLOY: 3 HOURS AGO // COFFEE_LEVEL: CRITICAL // </span>
+    </div>
 
-    <header>
-        <div class="logo">VINCENT<span>-REDEX</span></div>
-        <div class="tagline">// Cyberpunk Developer & Digital Architect</div>
-    </header>
-
-    <main>
-        <section class="profile-section">
-            <div class="avatar-container">
-                <div class="avatar">R</div>
+    <div class="container">
+        <header>
+            <h1 class="glitch" data-text="VINCENT-REDEX">VINCENT-REDEX</h1>
+            <div class="subtitle">[aka someone who codes at 3am]</div>
+            <div class="tagline">
+                I build download managers because apparently the existing ones weren't "cyberpunk enough." 
+                Also I pretend to understand Rust but mostly just copy-paste from Stack Overflow.
             </div>
-            <div class="profile-info">
-                <h2>ABOUT ME</h2>
-                <div class="handle">@VINCENT-REDEX</div>
-                <p>
-                    Welcome to my digital nexus. I'm a passionate developer specializing in building 
-                    high-performance applications with modern tech stacks. From download managers to 
-                    custom tools, I craft solutions that merge aesthetics with functionality.
-                </p>
-                <p>
-                    Currently focused on REDEx Manager and exploring the boundaries of desktop 
-                    application development with Kotlin Multiplatform and Compose.
-                </p>
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-value">12</div>
-                        <div class="stat-label">Repositories</div>
+        </header>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-dot busy"></div>
+                <span>Currently: Procrastinating</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <span>Online since: 2024</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot offline"></div>
+                <span>Sleep: Optional</span>
+            </div>
+        </div>
+
+        <section>
+            <h2>projects.json</h2>
+            <div class="projects">
+                <a href="https://github.com/VINCENT-REDEX/REDEx-Download-Manager" target="_blank" class="project">
+                    <div class="project-header">
+                        <span class="project-name">REDEx-Download-Manager</span>
+                        <span class="project-lang">Kotlin</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value">5K+</div>
-                        <div class="stat-label">Contributions</div>
+                    <div class="project-desc">
+                        The download manager I built because Chrome's wasn't doing it for me. 
+                        Now it has a Cyberpunk theme. I have priorities.
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value">∞</div>
-                        <div class="stat-label">Ambition</div>
+                    <div class="project-meta">24 stars • 5 forks • Probably works</div>
+                </a>
+
+                <a href="https://github.com/VINCENT-REDEX/vincent-redex.github.io" target="_blank" class="project">
+                    <div class="project-header">
+                        <span class="project-name">This Website</span>
+                        <span class="project-lang">HTML/CSS</span>
                     </div>
+                    <div class="project-desc">
+                        Yes, I made another portfolio site. No, I won't use a template. 
+                        At least it's not Wix.
+                    </div>
+                    <div class="project-meta">5 stars • You're looking at it</div>
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <h2>about_me.txt</h2>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">vincent@nix:~$</span>
+                    <span class="terminal-command"> whoami</span>
+                </div>
+                <div class="terminal-line terminal-output">
+                    A person who turns caffeine into code since approximately 2019
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">vincent@nix:~$</span>
+                    <span class="terminal-command"> cat skills.txt</span>
+                </div>
+                <div class="terminal-line terminal-output">
+                    • Kotlin (actually decent at it)<br>
+                    • JavaScript (it is what it is)<br>
+                    • CSS (I spend too much time on it)<br>
+                    • Git (90% `git reset --hard`)<br>
+                    • Copying from Stack Overflow (expert level)
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">vincent@nix:~$</span>
+                    <span class="terminal-command"> echo $STATUS</span>
+                </div>
+                <div class="terminal-line terminal-output">
+                    Building things that probably could've been done in 10 lines of Python
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">vincent@nix:~$</span>
+                    <span class="cursor"></span>
                 </div>
             </div>
         </section>
 
-        <h2 class="section-title">FEATURED_PROJECTS</h2>
-        <div class="projects-grid">
-            <a href="https://github.com/VINCENT-REDEX/REDEx-Download-Manager" target="_blank" class="project-card">
-                <h3>REDEx Manager</h3>
-                <div class="repo-name">RedEx-Download-Manager</div>
-                <p>A next-generation download manager with Cyberpunk 2077 inspired theming, built with Kotlin Multiplatform and Compose.</p>
-                <div class="project-meta">
-                    <span>★ 24 Stars</span>
-                    <span>◆ Fork</span>
-                    <span>⚡ Kotlin</span>
-                </div>
-            </a>
-            
-            <a href="https://github.com/VINCENT-REDEX/vincent-redex.github.io" target="_blank" class="project-card">
-                <h3>GitHub Profile</h3>
-                <div class="repo-name">vincent-redex.github.io</div>
-                <p>Personal cyberpunk-themed portfolio and landing page showcasing projects and skills.</p>
-                <div class="project-meta">
-                    <span>★ 5 Stars</span>
-                    <span>◆ Fork</span>
-                    <span>⚡ HTML/CSS</span>
-                </div>
-            </a>
-        </div>
+        <section>
+            <h2>unpopular_opinions</h2>
+            <div class="rant">
+                <p>
+                    "Modern" CSS frameworks are just JavaScript with extra steps. Tailwind is fine, 
+                    I'm not here to fight. But let's be real: the best UIs I've ever made were 
+                    hand-rolled CSS with zero dependencies.
+                </p>
+                <p>
+                    Also: if your app needs more than 3 themes, you've already lost control of the design.
+                    Cyberpunk is ONE vibe. Embrace it.
+                </p>
+                <p>
+                    Kotlin Multiplatform is cool until you realize you're maintaining 3x the codebase. 
+                    But hey, at least it compiles.
+                </p>
+            </div>
+        </section>
 
-        <h2 class="section-title">TECH_STACK</h2>
-        <div class="skills-container">
-            <span class="skill-tag">Kotlin</span>
-            <span class="skill-tag">Compose</span>
-            <span class="skill-tag">KMP</span>
-            <span class="skill-tag">Gradle</span>
-            <span class="skill-tag">JavaScript</span>
-            <span class="skill-tag">Node.js</span>
-            <span class="skill-tag">Git</span>
-            <span class="skill-tag">UI/UX</span>
-            <span class="skill-tag">Cyberpunk Aesthetics</span>
-        </div>
+        <section>
+            <h2>connect</h2>
+            <div class="links">
+                <a href="https://github.com/VINCENT-REDEX" target="_blank" class="link">
+                    <div class="link-label">GitHub</div>
+                    <div class="link-url">github.com/VINCENT-REDEX</div>
+                </a>
+                <a href="https://vincent-redex.github.io" target="_blank" class="link">
+                    <div class="link-label">Portfolio</div>
+                    <div class="link-url">vincent-redex.github.io</div>
+                </a>
+                <a href="https://github.com/VINCENT-REDEX/REDEx-Download-Manager" target="_blank" class="link">
+                    <div class="link-label">REDEx Manager</div>
+                    <div class="link-url">main repo link</div>
+                </a>
+            </div>
+        </section>
 
-        <h2 class="section-title">CONNECT</h2>
-        <div class="links-container">
-            <a href="https://github.com/VINCENT-REDEX" target="_blank" class="cyber-link">
-                <span class="icon">⌘</span>
-                <span class="link-text">GitHub Profile</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="https://vincent-redex.github.io" target="_blank" class="cyber-link">
-                <span class="icon">◈</span>
-                <span class="link-text">Portfolio Website</span>
-                <span class="arrow">→</span>
-            </a>
-            <a href="https://github.com/VINCENT-REDEX/REDEx-Download-Manager" target="_blank" class="cyber-link">
-                <span class="icon">▼</span>
-                <span class="link-text">REDEx Manager Repository</span>
-                <span class="arrow">→</span>
-            </a>
-        </div>
-    </main>
+        <footer>
+            <div class="footer-left">
+                <span>© 2026 VINCENT-REDEX</span>
+                <span>Built at 2:47 AM because sleep is for the weak</span>
+            </div>
+            <div class="footer-right">
+                <span>Best viewed in [your browser]</span>
+                <span>Yes, I checked it on mobile</span>
+                <span>No, there are no bugs</span>
+            </div>
+        </footer>
+    </div>
 
-    <footer>
-        <p>Built with <span class="neon-text">neon</span> and <span class="neon-text">determination</span></p>
-        <p>© 2026 VINCENT-REDEX // System Online</p>
-    </footer>
+    <div class="easter-egg" onclick="document.querySelector('.hidden-msg').classList.toggle('show')"></div>
+    <div class="hidden-msg">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">🥚</div>
+        <div>You found it.</div>
+        <div style="color: #666; margin-top: 0.5rem;">There's nothing here. Go touch some grass.</div>
+        <div style="color: #444; margin-top: 0.5rem; font-size: 0.8rem;">(click anywhere to close)</div>
+    </div>
+
+    <script>
+        // Hide easter egg message when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.classList.contains('easter-egg')) {
+                document.querySelector('.hidden-msg').classList.remove('show');
+            }
+        });
+
+        // Console easter egg
+        console.log('%c STOP ', 'background: #ff003c; color: #000; font-size: 2rem; font-weight: bold;');
+        console.log('%c If someone told you to paste this in the console, it\'s a scam. ', 'color: #00f0ff;');
+        console.log('%c Also hi. Thanks for checking the console. You\'re either a dev or very curious. ', 'color: #666;');
+    </script>
 </body>
 </html>
